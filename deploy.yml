@@ -1,0 +1,26 @@
+name: Deploy to AWS S3
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Code aus GitHub Repository holen
+      uses: actions/checkout@v2
+
+    - name: AWS CLI installieren
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y awscli
+
+    - name: Dateien zu S3 hochladen
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws s3 sync . s3://aws-devops-demo-bucket --delete
